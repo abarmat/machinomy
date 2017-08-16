@@ -1,27 +1,17 @@
-var Promise = require("bluebird");
-var MongoClient = Promise.promisifyAll(require("mongodb").MongoClient);
-var MONGO_CONNECTION_STRING = 'mongodb://localhost:27017/usersdb';
+var MongoClient = require( 'mongodb' ).MongoClient;;
 
 var _db:any
 
 let Client = {
  connectToServer: (callback: Function) => {
-    MongoClient
-      .connect(MONGO_CONNECTION_STRING, {
-        promiseLibrary: Promise
-      })
-      .then(function(db:any) {
-        _db = db
-        return callback()
-      })
-      .catch(function(err:any) {
-        console.error("ERROR", err);
-        return callback(err)
-      });
+    MongoClient.connect( "mongodb://localhost:27017/machinomy", function( err:any, db:any ) {
+      _db = db
+      return callback(err)
+    } );
   },
 
-  getDb: () => {
-    return _db;
+  db: () => {
+    return _db
   }
 }
 

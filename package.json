@@ -86,7 +86,7 @@
     "web3-typescript-typings": "https://github.com/machinomy/web3-typescript-typings"
   },
   "devDependencies": {
-    "@types/jest": "^20.0.4",
+    "@types/jest": "^20.0.7",
     "body-parser": "^1.15.2",
     "coveralls": "^2.12.0",
     "express": "^4.14.0",

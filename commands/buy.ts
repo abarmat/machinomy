@@ -9,17 +9,24 @@ function buy (uri: string, command: CommandPrompt): void {
     password = command.parent.password
   }
 
-  mongo.connectToServer(()=>{
-    if (settings.account) {
-      machinomy.buy(uri, settings.account, password).then(contents => {
-        mongo.getDb().close()
-      }).catch((error: any) => {
-        console.error(error)
-      })
-    } else {
+  let startBuy = () => {
+    if (!settings.account) {
       console.error('Sender account is not defined')
+      return
     }
-  })
+    machinomy.buy(uri, settings.account, password).then(contents => {
+      mongo.db().close()
+    }).catch((error: any) => {
+      console.error(error)
+    })
+  }
+  if (settings.engine == 'mongo'){
+    mongo.connectToServer(() => {
+      startBuy()
+    })
+  } else {
+    startBuy()
+  }
 }
 
 export default buy

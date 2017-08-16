@@ -79,9 +79,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/jest@^20.0.4":
-  version "20.0.4"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-20.0.4.tgz#91e2c76fbe90b3a719b5d689958f0495f005beb9"
+"@types/jest@^20.0.7":
+  version "20.0.7"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-20.0.7.tgz#39cd215db8bda03928dceb933a1e63eb2cbd210e"
 
 "@types/lodash@^4.14.68":
   version "4.14.70"

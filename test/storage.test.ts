@@ -4,7 +4,7 @@ import * as channel from '../lib/channel'
 
 import Web3 = require('web3')
 import Promise = require('bluebird')
-import mongoUtil from '../lib/mongo';
+import mongo from '../lib/mongo';
 // import cleanMongo from 'clean-mongo';
 // import clean from 'mongo-clean'
 
@@ -30,19 +30,19 @@ const paymentsDatabase = () => databasePromise(engine => {
 
 describe('storage', () => {
   beforeAll((done) => {
-    mongoUtil.connectToServer( () => {
+    mongo.connectToServer( () => {
       done()
     });
   });
 
   beforeEach((done) => {
-    mongoUtil.getDb().dropDatabase(() => {
+    mongo.db().dropDatabase(() => {
       done()
     })
   });
 
   afterAll((done) => {
-    mongoUtil.getDb().close()
+    mongo.db().close()
   });
 
   let web3 = support.fakeWeb3()

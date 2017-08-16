@@ -3,23 +3,23 @@ import * as receiver from '../lib/receiver'
 import * as channel from '../lib/channel'
 import { randomStorage } from './support'
 import { PaymentChannel } from '../lib/channel'
-import mongoUtil from '../lib/mongo';
+import mongo from '../lib/mongo';
 
 describe('receiver', () => {
   beforeAll((done) => {
-    mongoUtil.connectToServer( () => {
+    mongo.connectToServer( () => {
       done()
     });
   });
 
   beforeEach((done) => {
-    mongoUtil.getDb().dropDatabase(() => {
+    mongo.db().dropDatabase(() => {
       done()
     })
   });
 
   afterAll((done) => {
-    mongoUtil.getDb().close()
+    mongo.db().close()
   });
 
   let web3 = support.fakeWeb3()
