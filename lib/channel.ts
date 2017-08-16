@@ -57,7 +57,7 @@ const DAY_IN_SECONDS = 86400
 /**
  * Default settlement period for a payment channel
  */
-const DEFAULT_SETTLEMENT_PERIOD = 2 * DAY_IN_SECONDS
+const DEFAULT_SETTLEMENT_PERIOD = 2
 
 /**
  * Default duration of a payment channel.
@@ -201,7 +201,7 @@ export class ChannelContract {
    */
   buildPaymentChannel (sender: string, receiver: string, value: number): Promise<PaymentChannel> {
     return new Promise<PaymentChannel>((resolve, reject) => {
-      log.info('Building payment channel from ' + sender + ' to ' + receiver + ', initial amount set to ' + value)
+      //log.info('Building payment channel from ' + sender + ' to ' + receiver + ', initial amount set to ' + value)
       const settlementPeriod = DEFAULT_SETTLEMENT_PERIOD
       const duration = DEFAULT_CHANNEL_TTL
       const options = {
@@ -212,15 +212,15 @@ export class ChannelContract {
       this.contract.createChannel(receiver, duration, settlementPeriod, options, () => {
         const didCreateChannelEvent = this.contract.DidCreateChannel({sender, receiver})
         didCreateChannelEvent.watch<Broker.DidCreateChannel>((error, result) => {
-          log.info('Waiting for the channel to be created on the blockchain: watching for DidCreateChannel event')
+          //log.info('Waiting for the channel to be created on the blockchain: watching for DidCreateChannel event')
           if (error) {
             reject(error)
           } else {
             const channelId = result.args.channelId
-            log.info('The channel ' + channelId + ' is created')
+            //log.info('The channel ' + channelId + ' is created')
             const paymentChannel = new PaymentChannel(sender, receiver, channelId, value, 0)
             didCreateChannelEvent.stopWatching(() => {
-              log.info('No longer watching for DidCreateChannel event')
+              //log.info('No longer watching for DidCreateChannel event')
               if (error) {
                 reject(error)
               } else {
@@ -243,7 +243,7 @@ export class ChannelContract {
             if (error) {
               reject(error)
             } else {
-              log.info('Claimed ' + result.args.payment + ' from ' + result.args.channelId)
+              //log.info('Claimed ' + result.args.payment + ' from ' + result.args.channelId)
               resolve(result.args.payment)
             }
           })
@@ -321,10 +321,10 @@ export class ChannelContract {
   startSettle (account: string, channelId: string, payment: BigNumber.BigNumber): Promise<void> {
     return new Promise((resolve, reject) => {
       this.contract.startSettle(channelId, payment, {from: account}, () => {
-        log.info('Triggered Start Settle on the contract for channel ' + channelId + ' from ' + account)
+        //log.info('Triggered Start Settle on the contract for channel ' + channelId + ' from ' + account)
         const didStartSettleEvent = this.contract.DidStartSettle({channelId, payment})
         didStartSettleEvent.watch((error) => {
-          log.info('Received DidStartSettle event for channel ' + channelId)
+          //log.info('Received DidStartSettle event for channel ' + channelId)
           didStartSettleEvent.stopWatching(() => {
             if (error) {
               reject(error)
@@ -340,11 +340,11 @@ export class ChannelContract {
   finishSettle (account: string, channelId: string) {
     return new Promise((resolve, reject) => {
       this.contract.finishSettle(channelId, {from: account}, () => {
-        log.info('Triggered Finish Settle on the contract')
+        //log.info('Triggered Finish Settle on the contract')
         const didSettle = this.contract.DidSettle({channelId})
         didSettle.watch<Broker.DidSettle>((error, result) => {
           didSettle.stopWatching(() => {
-            log.info('Received DidSettle event for channel ' + channelId)
+            //log.info('Received DidSettle event for channel ' + channelId)
             if (error) {
               reject(error)
             } else {

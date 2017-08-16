@@ -23,7 +23,7 @@ type GotTokenCallback = (error: string|null, token?: string) => void
 const parseToken = (req: express.Request, callback: GotTokenCallback) => {
   let content = req.get(HEADER_NAME)
   if (content) {
-    log.debug('Authorization header: ' + content)
+    // log.debug('Authorization header: ' + content)
     let authorization = content.split(' ')
     let type = authorization[0].toLowerCase()
     let token = authorization[1]
@@ -70,10 +70,10 @@ export class Paywall {
       } else if (token) {
         this.server.acceptToken(token).then(isOk => {
           if (isOk) {
-            log.info('Got valid paywall token')
+            //log.info('Got valid paywall token')
             callback(req, res)
           } else {
-            log.warn('Got invalid paywall token')
+            // log.warn('Got invalid paywall token')
             this.paymentInvalid(fixedPrice, req, res)
           }
         })
@@ -81,7 +81,7 @@ export class Paywall {
     }
 
     return (req: express.Request, res: express.Response) => {
-      log.info(`Requested ${req.path}`)
+      //log.info(`Requested ${req.path}`)
       parseToken(req, (error, token) => {
         if (typeof price === 'function') {
           price(req, fixedPrice => {
@@ -102,7 +102,7 @@ export class Paywall {
   }
 
   paymentRequired (price: number, req: express.Request, res: express.Response) {
-    log.info('Require payment ' + price + ' for ' + req.path)
+    //log.info('Require payment ' + price + ' for ' + req.path)
     res.status(HTTP_CODE_PAYMENT_REQUIRED)
       .set(paywallHeaders(this.receiverAccount, this.gatewayUri, price))
       .send('Payment Required')

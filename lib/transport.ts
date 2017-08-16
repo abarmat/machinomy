@@ -21,7 +21,7 @@ export const STATUS_CODES = {
 const extractPaywallToken = (response: RequestResponse): string => {
   let token = response.headers['paywall-token'] as string
   if (token) {
-    log.info('Got token from the server')
+    //log.info('Got token from the server')
     return token
   } else {
     throw new Error('Can not find a token in the response')
@@ -47,7 +47,7 @@ export class Transport {
     let headers = {
       'authorization': 'Paywall ' + token
     }
-    log.info(`Getting ${uri} using access token ${token}`)
+    //log.info(`Getting ${uri} using access token ${token}`)
     if (_.isFunction(opts.onWillLoad)) {
       opts.onWillLoad()
     }
@@ -65,7 +65,7 @@ export class Transport {
       uri: uri,
       headers: headers
     }
-    log.info(`Getting ${uri} using headers and options`, headers, options)
+    //log.info(`Getting ${uri} using headers and options`, headers, options)
     return request(options)
   }
 
@@ -83,7 +83,7 @@ export class Transport {
       json: true,
       body: payment
     }
-    log.info('Getting request token in exchange for payment', payment)
+    //log.info('Getting request token in exchange for payment', payment)
     if (_.isFunction(opts.onWillSendPayment)) {
       opts.onWillSendPayment()
     }

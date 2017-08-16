@@ -4,6 +4,9 @@ import * as channel from '../lib/channel'
 
 import Web3 = require('web3')
 import Promise = require('bluebird')
+import mongoUtil from '../lib/mongo';
+// import cleanMongo from 'clean-mongo';
+// import clean from 'mongo-clean'
 
 function databasePromise <A> (genDatabase: (engine: storage.Engine) => A): Promise<A> {
   return support.tmpFileName().then(filename => {
@@ -26,6 +29,22 @@ const paymentsDatabase = () => databasePromise(engine => {
 })
 
 describe('storage', () => {
+  beforeAll((done) => {
+    mongoUtil.connectToServer( () => {
+      done()
+    });
+  });
+
+  beforeEach((done) => {
+    mongoUtil.getDb().dropDatabase(() => {
+      done()
+    })
+  });
+
+  afterAll((done) => {
+    mongoUtil.getDb().close()
+  });
+
   let web3 = support.fakeWeb3()
 
   describe('.engine', () => {

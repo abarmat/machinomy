@@ -93,9 +93,9 @@ export default class Sender {
   canUseChannel (paymentChannel: PaymentChannel, paymentRequired: PaymentRequired): Promise<boolean> {
     return this.contract.getState(paymentChannel.channelId).then(state => {
       let isOpen = state === 0 // FIXME Harmonize channel states
-      log.debug(`canUseChannel: isOpen: ${isOpen}`)
+      // log.debug(`canUseChannel: isOpen: ${isOpen}`)
       let funded = paymentChannel.value >= (paymentChannel.spent + paymentRequired.price)
-      log.debug(`canUseChannel: funded: ${funded}`)
+      // log.debug(`canUseChannel: funded: ${funded}`)
       return isOpen && funded
     })
   }
@@ -127,7 +127,7 @@ export default class Sender {
    * Select handler based on version returned by server.
    */
   handlePaymentRequired (uri: string, preFlightResponse: RequestResponse, opts: FreshChannelOpts = {}): Promise<PaymentPair> {
-    log.info('Handling 402 Payment Required response')
+    //log.info('Handling 402 Payment Required response')
     return this.extractPaymentRequired(preFlightResponse).then(paymentRequired => {
       return this.findOpenChannel(paymentRequired).then(paymentChannel => {
         if (paymentChannel) {

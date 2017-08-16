@@ -3,8 +3,25 @@ import * as receiver from '../lib/receiver'
 import * as channel from '../lib/channel'
 import { randomStorage } from './support'
 import { PaymentChannel } from '../lib/channel'
+import mongoUtil from '../lib/mongo';
 
 describe('receiver', () => {
+  beforeAll((done) => {
+    mongoUtil.connectToServer( () => {
+      done()
+    });
+  });
+
+  beforeEach((done) => {
+    mongoUtil.getDb().dropDatabase(() => {
+      done()
+    })
+  });
+
+  afterAll((done) => {
+    mongoUtil.getDb().close()
+  });
+
   let web3 = support.fakeWeb3()
 
   describe('.build', () => {
@@ -95,7 +112,7 @@ describe('receiver', () => {
           return receiver.build(web3, '0xdeadbeaf', storage).whenValidPayment(payment).then(() => {
             return storage.payments.firstMaximum(payment.channelId)
           }).then(savedPayment => {
-            console.log(savedPayment)
+            // console.log(savedPayment)
             expect(savedPayment).not.toBeNull()
             if (savedPayment) {
               expect(payment.channelId).toBe(savedPayment.channelId)
