@@ -3,11 +3,14 @@ var MongoClient = require( 'mongodb' ).MongoClient;;
 var _db:any
 
 let Client = {
- connectToServer: (callback: Function) => {
-    MongoClient.connect( "mongodb://localhost:27017/machinomy", function( err:any, db:any ) {
+  connectToServer: (callback: Function) => {
+    MongoClient.connect("mongodb://localhost:27017/machinomy", (err:any, db:any) => {
       _db = db
-      return callback(err)
-    } );
+      if (err) {
+        throw new Error("Can not connect to the database")
+      }
+      return callback()
+    })
   },
 
   db: () => {

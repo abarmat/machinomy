@@ -17,6 +17,7 @@ import PaymentsDatabase from './storages/payments_database'
 import * as configuration from './configuration'
 
 const log = Log.create('storage')
+const defaultEngineName = 'nedb'
 
 const namespaced = (namespace: string|null|undefined, kind: string): string => {
   let result = kind
@@ -41,8 +42,7 @@ export const channels = (web3: Web3, engine: Engine, namespace: string | null): 
 /**
  * Instantiate a storage engine.
  */
-export const engine = (path: string, inMemoryOnly: boolean = false, engine_name: string = 'nedb'): Engine => {
-  console.log(engine_name)
+export const engine = (path: string, inMemoryOnly: boolean = false, engine_name: string = defaultEngineName): Engine => {
   if (engine_name == 'nedb') {
     return new EngineNedb(path, inMemoryOnly)
   } else if (engine_name == 'mongo') {
@@ -59,7 +59,7 @@ export default class Storage {
   tokens: TokensDatabase
   payments: PaymentsDatabase
 
-  constructor (web3: Web3, path: string, namespace: string|null, inMemoryOnly?: boolean, engine_name: string = 'nedb') {
+  constructor (web3: Web3, path: string, namespace: string|null, inMemoryOnly?: boolean, engine_name: string = defaultEngineName) {
     let storageEngine = engine(path, inMemoryOnly, engine_name)
     this.namespace = namespace || null
     // this.db = storageEngine.datastore
@@ -72,6 +72,6 @@ export default class Storage {
 /**
  * Build an instance of Storage.
  */
-export const build = (web3: Web3, path: string, namespace: string | null = null, inMemoryOnly?: boolean, engine_name: string = 'nedb'): Storage => {
+export const build = (web3: Web3, path: string, namespace: string | null = null, inMemoryOnly?: boolean, engine_name: string = defaultEngineName): Storage => {
   return new Storage(web3, path, namespace, inMemoryOnly, engine_name)
 }

@@ -4,13 +4,13 @@ import * as channel from '../lib/channel'
 
 import Web3 = require('web3')
 import Promise = require('bluebird')
-import mongo from '../lib/mongo';
-// import cleanMongo from 'clean-mongo';
-// import clean from 'mongo-clean'
+import mongo from '../lib/mongo'
+
+const engine_name = process.env.ENGINE_NAME || 'nedb'
 
 function databasePromise <A> (genDatabase: (engine: storage.Engine) => A): Promise<A> {
   return support.tmpFileName().then(filename => {
-    let engine = storage.engine(filename, true)
+    let engine = storage.engine(filename, true, engine_name)
     return genDatabase(engine)
   })
 }
@@ -30,27 +30,39 @@ const paymentsDatabase = () => databasePromise(engine => {
 
 describe('storage', () => {
   beforeAll((done) => {
-    mongo.connectToServer( () => {
+    if (process.env.ENGINE_NAME == 'mongo') {
+      mongo.connectToServer(() => {
+        done()
+      })
+    } else {
       done()
-    });
-  });
+    }
+  })
 
   beforeEach((done) => {
-    mongo.db().dropDatabase(() => {
+    if (process.env.ENGINE_NAME == 'mongo') {
+      mongo.db().dropDatabase(() => {
+        done()
+      })
+    } else {
       done()
-    })
-  });
+    }
+  })
 
   afterAll((done) => {
-    mongo.db().close()
-  });
+    if (process.env.ENGINE_NAME == 'mongo') {
+      mongo.db().close()
+    } else {
+      done()
+    }
+  })
 
   let web3 = support.fakeWeb3()
 
   describe('.engine', () => {
     it('return Engine instance', done => {
       support.tmpFileName().then(filename => {
-        let engine = storage.engine(filename, true)
+        let engine = storage.engine(filename, true, engine_name)
         expect(typeof engine).toBe('object')
       }).then(done)
     })
@@ -59,7 +71,7 @@ describe('storage', () => {
   describe('.build', () => {
     it('return Storage', done => {
       support.tmpFileName().then(filename => {
-        let s = storage.build(web3, filename, 'namespace')
+        let s = storage.build(web3, filename, 'namespace', true, engine_name)
         expect(typeof s).toBe('object')
       }).then(done)
     })
@@ -67,7 +79,7 @@ describe('storage', () => {
 
   describe('Engine', () => {
     let engine = support.tmpFileName().then(filename => {
-      return storage.engine(filename, true)
+      return storage.engine(filename, true, engine_name)
     })
 
     describe('#insert and #find', () => {

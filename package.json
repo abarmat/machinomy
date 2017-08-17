@@ -14,7 +14,9 @@
     "url": "https://github.com/machinomy/machinomy.git"
   },
   "scripts": {
-    "test": "NODE_ENV=test jest --runInBand",
+    "test_nedb": "NODE_ENV=test ENGINE_NAME=nedb jest --runInBand",
+    "test_mongo": "NODE_ENV=mongo ENGINE_NAME=mongo jest --runInBand",
+    "test": "yarn run test_nedb; yarn run test_mongo",
     "build": "tsc -p tsconfig.json",
     "lint": "tslint -t stylish --type-check --project 'tsconfig.json'",
     "prepublish": "yarn run build"
